@@ -6,6 +6,7 @@ import morgan from "morgan"
 import { config } from "./config/data.config"
 import cors from "cors"
 import { errorHandling } from "./middleware/error.middleware";
+import { chatRouter } from "./routes/chat.router";
 
 const app = express()
 
@@ -23,7 +24,6 @@ app.use(
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
-app.use(errorHandling)
 
 app.use(
     cors({
@@ -36,5 +36,8 @@ app.get("/test", (_: Request, res: Response) => {
     res.send("Server is running");
 });
 
+app.use("/api/chat",chatRouter)
 
+
+app.use(errorHandling)
 export default app

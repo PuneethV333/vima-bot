@@ -25,6 +25,8 @@ if (!envValidation.success) {
             [
                 "PORT",
                 "FRONTEND_URL",
+                "LLM_URL",
+                "FAST_URL"
             ].includes(key)
         ) {
             console.error(`  ${key}: ${value ? "✅" : "❌"}`);
@@ -38,6 +40,8 @@ if (!envValidation.success) {
 export const config = {
     port: envValidation.data.PORT,
     frontendUrl: envValidation.data.FRONTEND_URL,
+    llmUrl: envValidation.data.LLM_URL,
+    fastUrl: envValidation.data.FAST_URL
 } as const;
 
 console.log("✅ Configuration loaded successfully");
