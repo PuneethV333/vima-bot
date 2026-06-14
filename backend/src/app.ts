@@ -5,6 +5,7 @@ import helmet from "helmet";
 import morgan from "morgan"
 import { config } from "./config/data.config"
 import cors from "cors"
+import { errorHandling } from "./middleware/error.middleware";
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.use(
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
+app.use(errorHandling)
 
 app.use(
     cors({
