@@ -1,0 +1,8 @@
+frontend user speaks recorded and converted to text 
+sent to node server 
+that is send to fastapi based voice to text model 
+and return to node server with is again 
+send to local llm model
+return text is sent to node  server than that is 
+converted to voice using fastapi based text to voice model 
+and sent to frontend
