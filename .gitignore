@@ -71,4 +71,7 @@ Thumbs.db
 logs/
 *.log
 
-"models/"
+models/
+
+history.json
+

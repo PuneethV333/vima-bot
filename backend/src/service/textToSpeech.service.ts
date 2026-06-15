@@ -6,5 +6,5 @@ export const textToSpeech = async (text: string) => {
     const res = await axios.post(url, { text, voice: "en-IN-PrabhatNeural" }, {
         responseType: "arraybuffer"
     })
-    return Buffer.from(res.data)
+    return Buffer.from(res.data).toString("base64")
 }

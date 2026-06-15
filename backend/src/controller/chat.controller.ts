@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { getError } from "../utils/error.utils";
 import { speechToText } from "../service/speechToText.service";
+import { chatService } from "../service/chat.service";
+import { textToSpeech } from "../service/textToSpeech.service";
 
 export const chat = async (req: Request, res: Response) => {
     try {
@@ -14,9 +16,19 @@ export const chat = async (req: Request, res: Response) => {
 
         const transcript = await speechToText(file)
 
-        const prompt = `your name is vima-bot 
-            
-        `
+        const result = await chatService(transcript)
+
+        const audioUrl = await textToSpeech(result.speech)
+
+        return res.status(200).json({
+            transcript,
+            type: result.type,
+            response: result.response,
+            speech: result.speech,
+            audioUrl,// const audio = new Audio(`data:audio/mpeg;base64,${data.audio}`); audio.play();
+            tool: result.tool,
+            params: result.params
+        })
 
 
     } catch (err) {
