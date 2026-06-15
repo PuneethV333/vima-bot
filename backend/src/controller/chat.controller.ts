@@ -8,12 +8,15 @@ export const chat = async (req: Request, res: Response) => {
 
         if (!file) {
             return res.status(400).json({
-                message: ""
+                message: "no audio file provided"
             })
         }
 
         const transcript = await speechToText(file)
 
+        const prompt = `your name is vima-bot 
+            
+        `
 
 
     } catch (err) {
