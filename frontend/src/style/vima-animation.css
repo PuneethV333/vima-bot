@@ -1,0 +1,319 @@
+@keyframes vima-ripple {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes vima-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+@keyframes vima-wave {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.vima-app {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: #0b0c0f;
+  color: #f5f4f2;
+  font-family: "DM Sans", system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vima-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 30%,
+    rgba(255, 91, 53, 0.08) 0%,
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.vima-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  z-index: 1;
+}
+
+.vima-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.vima-brand-mark {
+  font-family: "Sora", system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+.vima-brand-sub {
+  font-size: 11px;
+  color: #6b6d74;
+  letter-spacing: 0.4px;
+}
+
+.vima-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #9a9ca3;
+  border: 1px solid #1c1d21;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: #0f1013;
+}
+
+.vima-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3a3d44;
+  transition: background 0.3s;
+}
+.vima-dot.active {
+  background: #ff5b35;
+}
+
+.vima-main {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  padding: 0 20px;
+}
+
+.vima-orb-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 36px;
+  padding-bottom: 28px;
+}
+.vima-hint {
+  font-size: 13px;
+  color: #6b6d74;
+}
+
+.vima-orb-btn {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vima-orb-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.vima-ring {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 91, 53, 0.5);
+  animation: vima-ripple 1.8s ease-out infinite;
+  opacity: 0;
+  animation-play-state: paused;
+}
+.vima-ring.r2 {
+  animation-delay: 0.6s;
+}
+.vima-orb-zone.listening .vima-ring {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+.vima-orb-core {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    #ff7a52,
+    #ff5b35 60%,
+    #d8431f 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  box-shadow: 0 0 30px rgba(255, 91, 53, 0.25);
+}
+.vima-orb-core.active {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 60px rgba(255, 91, 53, 0.55),
+    0 0 120px rgba(255, 91, 53, 0.25);
+}
+
+.vima-orb-inner-glow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  filter: blur(2px);
+}
+
+.vima-thinking-dots {
+  display: none;
+  gap: 6px;
+}
+.vima-thinking-dots.show {
+  display: flex;
+}
+.vima-think-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: vima-bounce 0.9s ease-in-out infinite;
+}
+
+.vima-waveform {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+}
+.vima-waveform.show {
+  display: flex;
+}
+.vima-wave-bar {
+  width: 4px;
+  height: 16px;
+  border-radius: 2px;
+  background: #fff;
+  animation: vima-wave 0.8s ease-in-out infinite;
+}
+
+.vima-chat-zone {
+  width: 100%;
+  max-width: 560px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.vima-empty-state {
+  margin: auto;
+  text-align: center;
+  color: #6b6d74;
+  padding: 40px 0;
+}
+.vima-empty-title {
+  font-size: 14px;
+  color: #9a9ca3;
+  margin: 0 0 4px;
+}
+.vima-empty-body {
+  font-size: 13px;
+  margin: 0;
+}
+
+.vima-thread {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 4px 16px;
+  max-height: 50vh;
+}
+
+.vima-bubble-row {
+  display: flex;
+}
+.vima-bubble-row.user {
+  justify-content: flex-end;
+}
+
+.vima-bubble {
+  max-width: 78%;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 10px 14px;
+  border-radius: 14px;
+}
+.vima-bubble.user {
+  background: #1c1d21;
+  color: #f5f4f2;
+  border-top-right-radius: 4px;
+}
+.vima-bubble.vima {
+  background: rgba(255, 91, 53, 0.1);
+  border: 1px solid rgba(255, 91, 53, 0.2);
+  color: #f5f4f2;
+  border-top-left-radius: 4px;
+}
+
+.vima-bubble-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #ff5b35;
+  margin-bottom: 4px;
+}
+
+.vima-footer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 20px 28px;
+  flex-wrap: wrap;
+  z-index: 1;
+}
+.vima-quick-action {
+  font-size: 13px;
+  color: #c9cace;
+  background: #131417;
+  border: 1px solid #1c1d21;
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.vima-quick-action:hover {
+  background: #1c1d21;
+}
