@@ -3,7 +3,6 @@ from fastapi import UploadFile
 from fastapi.responses import FileResponse
 from core.whisper import model
 import uuid
-import shutil
 import edge_tts
 from starlette.background import BackgroundTask
 from pydantic import BaseModel
@@ -16,14 +15,13 @@ class SpeakRequest(BaseModel):
 
 async def transcribeService(file: UploadFile):
     tmp = f"/tmp/{uuid.uuid4()}.wav"
-    try:
-        with open(tmp, "wb") as f:
-            shutil.copyfileobj(file.file, f)
-        segments, _ = model.transcribe(tmp)
-        text = " ".join([s.text for s in segments])
-        return {"text": text.strip()}
-    finally:
-        os.remove(tmp)
+    contents = await file.read()
+    with open(tmp, "wb") as f:
+        f.write(contents)
+    segments, _ = model.transcribe(tmp, vad_filter=True)
+    text = " ".join([s.text for s in segments])
+    os.remove(tmp)
+    return {"text": text.strip()}
 
 
 async def speakService(body: SpeakRequest):

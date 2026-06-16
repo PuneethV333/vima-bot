@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
-import { envSchema } from "../types/env.types.js";
+import { envSchema } from "../types/env.types";
 
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });

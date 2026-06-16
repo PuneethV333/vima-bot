@@ -6,32 +6,29 @@ import { textToSpeech } from "../service/textToSpeech.service";
 
 export const chat = async (req: Request, res: Response) => {
     try {
-        const file = req.file
+        console.time("speechToText");
+        const transcript = await speechToText(req.file!);
+        console.log(transcript);
 
-        if (!file) {
-            return res.status(400).json({
-                message: "no audio file provided"
-            })
-        }
+        console.timeEnd("speechToText");
 
-        const transcript = await speechToText(file)
+        console.time("chatService");
+        const result = await chatService(transcript);
+        console.log(result);
+        
 
-        const result = await chatService(transcript)
+        console.timeEnd("chatService");
 
-        const audioUrl = await textToSpeech(result.speech)
+        console.time("textToSpeech");
+        const audioBase64 = await textToSpeech(result.speech);
+        console.timeEnd("textToSpeech");
 
-        return res.status(200).json({
+        res.json({
             transcript,
-            type: result.type,
             response: result.response,
-            speech: result.speech,
-            audioUrl,// const audio = new Audio(`data:audio/mpeg;base64,${data.audio}`); audio.play();
-            tool: result.tool,
-            params: result.params
-        })
-
-
+            audioBase64
+        });
     } catch (err) {
-        res.status(500).json(getError(err))
+        res.status(500).json(err);
     }
-}
+};

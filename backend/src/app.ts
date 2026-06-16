@@ -8,9 +8,8 @@ import cors from "cors"
 import { errorHandling } from "./middleware/error.middleware";
 import { chatRouter } from "./routes/chat.router";
 
-const app = express()
+export const app = express()
 
-app.set("trust proxy", 1);
 app.use(morgan("dev"));
 app.use(helmet());
 
@@ -40,4 +39,3 @@ app.use("/api/chat",chatRouter)
 
 
 app.use(errorHandling)
-export default app

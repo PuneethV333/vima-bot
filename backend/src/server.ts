@@ -1,5 +1,7 @@
-import app from "./app";
+
+import { app } from "./app";
 import { config } from "./config/data.config";
+
 
 const PORT: number = Number(config.port)
 
