@@ -1,17 +1,17 @@
-import { useState, useRef, useEffect, useCallback } from "react"
-import "./vima-animations.css"
-import { useChat } from "../hook/useChat"
-import { useAudioPlayer } from "../hook/useAudioPlayer"
-import { useVoiceDetection } from "../hook/useVoiceDetection"
-import { BROWSER_TOOLS } from "../types/tools.types"
-import { executeTool } from "../service/toolExecutor"
+import { useState, useRef, useEffect, useCallback } from "react";
+import "./vima-animations.css";
+import { useChat } from "../hook/useChat";
+import { useAudioPlayer } from "../hook/useAudioPlayer";
+import { useVoiceDetection } from "../hook/useVoiceDetection";
+import { BROWSER_TOOLS } from "../types/tools.types";
+import { executeTool } from "../service/toolExecutor";
 
-type VimaState = "idle" | "listening" | "thinking" | "speaking" | "error"
+type VimaState = "idle" | "listening" | "thinking" | "speaking" | "error";
 
 interface Message {
-  id: string
-  role: "user" | "vima"
-  content: string
+  id: string;
+  role: "user" | "vima";
+  content: string;
 }
 
 const STATE_LABEL: Record<VimaState, string> = {
@@ -20,66 +20,81 @@ const STATE_LABEL: Record<VimaState, string> = {
   thinking: "Thinking...",
   speaking: "Speaking...",
   error: "Something went wrong",
-}
+};
 
-export default function VimaInterface() {
-  const [state, setState] = useState<VimaState>("idle")
-  const [messages, setMessages] = useState<Message[]>([])
-  const threadRef = useRef<HTMLDivElement>(null)
+const VimaInterface = () => {
+  const [state, setState] = useState<VimaState>("idle");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const threadRef = useRef<HTMLDivElement>(null);
 
-  const chatMutation = useChat()
-  const { play } = useAudioPlayer()
+  const chatMutation = useChat();
+  const { play } = useAudioPlayer();
 
   const addMessage = useCallback((role: Message["role"], content: string) => {
-    setMessages((prev) => [...prev, { id: crypto.randomUUID(), role, content }])
-  }, [])
+    setMessages((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), role, content },
+    ]);
+  }, []);
 
   const handleSpeechEnd = useCallback(
     (file: File) => {
-      setState("thinking")
+      setState("thinking");
 
       chatMutation.mutate(file, {
         onSuccess: (data) => {
-          addMessage("user", data.transcript)
-          addMessage("vima", data.response)
+          addMessage("user", data.transcript);
+          addMessage("vima", data.response);
 
-          if (data.type === "tool" && data.tool && BROWSER_TOOLS.includes(data.tool as "openYoutube" | "playMusic" | "openManhwa")) {
-            executeTool({ tool: data.tool, params: data.params })
+          if (
+            data.type === "tool" &&
+            data.tool &&
+            BROWSER_TOOLS.includes(
+              data.tool as "openYoutube" | "playMusic" | "openManhwa",
+            )
+          ) {
+            executeTool({ tool: data.tool, params: data.params });
           }
 
-          setState("speaking")
-          play(data.audioBase64, () => setState("idle"))
+          setState("speaking");
+          play(data.audioBase64, () => setState("idle"));
         },
         onError: () => {
-          addMessage("vima", "Sorry, I couldn't process that. Could you try again?")
-          setState("error")
-          setTimeout(() => setState("idle"), 2000)
+          addMessage(
+            "vima",
+            "Sorry, I couldn't process that. Could you try again?",
+          );
+          setState("error");
+          setTimeout(() => setState("idle"), 2000);
         },
-      })
+      });
     },
-    [chatMutation, addMessage, play]
-  )
+    [chatMutation, addMessage, play],
+  );
 
   const vad = useVoiceDetection({
     onSpeechStart: () => setState("listening"),
     onSpeechEnd: handleSpeechEnd,
-  })
+  });
 
   useEffect(() => {
-    threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" })
-  }, [messages])
+    threadRef.current?.scrollTo({
+      top: threadRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
 
-  const isBusy = state === "thinking" || state === "speaking"
+  const isBusy = state === "thinking" || state === "speaking";
 
   const handleOrbClick = () => {
     if (vad.listening) {
-      vad.pause()
-      setState("idle")
+      vad.pause();
+      setState("idle");
     } else {
-      vad.start()
-      setState("idle")
+      vad.start();
+      setState("idle");
     }
-  }
+  };
 
   return (
     <div className="vima-app">
@@ -97,7 +112,9 @@ export default function VimaInterface() {
       </header>
 
       <main className="vima-main">
-        <div className={`vima-orb-zone ${state === "listening" ? "listening" : ""}`}>
+        <div
+          className={`vima-orb-zone ${state === "listening" ? "listening" : ""}`}
+        >
           <button
             className="vima-orb-btn"
             onClick={handleOrbClick}
@@ -109,14 +126,27 @@ export default function VimaInterface() {
             <div className={`vima-orb-core ${isBusy ? "active" : ""}`}>
               {state === "thinking" ? (
                 <div className="vima-thinking-dots show">
-                  <span className="vima-think-dot" style={{ animationDelay: "0s" }} />
-                  <span className="vima-think-dot" style={{ animationDelay: "0.15s" }} />
-                  <span className="vima-think-dot" style={{ animationDelay: "0.3s" }} />
+                  <span
+                    className="vima-think-dot"
+                    style={{ animationDelay: "0s" }}
+                  />
+                  <span
+                    className="vima-think-dot"
+                    style={{ animationDelay: "0.15s" }}
+                  />
+                  <span
+                    className="vima-think-dot"
+                    style={{ animationDelay: "0.3s" }}
+                  />
                 </div>
               ) : state === "speaking" ? (
                 <div className="vima-waveform show">
                   {[0, 1, 2, 3, 4].map((i) => (
-                    <span key={i} className="vima-wave-bar" style={{ animationDelay: `${i * 0.1}s` }} />
+                    <span
+                      key={i}
+                      className="vima-wave-bar"
+                      style={{ animationDelay: `${i * 0.1}s` }}
+                    />
                   ))}
                 </div>
               ) : (
@@ -128,8 +158,8 @@ export default function VimaInterface() {
             {vad.loading
               ? "Loading voice detection..."
               : vad.listening
-              ? "Just speak, I'm listening"
-              : "Tap the orb to start listening"}
+                ? "Just speak, I'm listening"
+                : "Tap the orb to start listening"}
           </p>
         </div>
 
@@ -137,14 +167,21 @@ export default function VimaInterface() {
           {messages.length === 0 ? (
             <div className="vima-empty-state">
               <p className="vima-empty-title">No conversation yet</p>
-              <p className="vima-empty-body">Ask VIMA to plan your day, draft an email, or play a song.</p>
+              <p className="vima-empty-body">
+                Ask VIMA to plan your day, draft an email, or play a song.
+              </p>
             </div>
           ) : (
             <div ref={threadRef} className="vima-thread show">
               {messages.map((m) => (
-                <div key={m.id} className={`vima-bubble-row ${m.role === "user" ? "user" : ""}`}>
+                <div
+                  key={m.id}
+                  className={`vima-bubble-row ${m.role === "user" ? "user" : ""}`}
+                >
                   <div className={`vima-bubble ${m.role}`}>
-                    {m.role === "vima" && <span className="vima-bubble-label">VIMA</span>}
+                    {m.role === "vima" && (
+                      <span className="vima-bubble-label">VIMA</span>
+                    )}
                     {m.content}
                   </div>
                 </div>
@@ -155,19 +192,33 @@ export default function VimaInterface() {
       </main>
 
       <footer className="vima-footer">
-        <button className="vima-quick-action" onClick={() => addMessage("user", "Plan my day")}>
+        <button
+          className="vima-quick-action"
+          onClick={() => addMessage("user", "Plan my day")}
+        >
           Plan my day
         </button>
-        <button className="vima-quick-action" onClick={() => addMessage("user", "Summarize")}>
+        <button
+          className="vima-quick-action"
+          onClick={() => addMessage("user", "Summarize")}
+        >
           Summarize
         </button>
-        <button className="vima-quick-action" onClick={() => addMessage("user", "Draft email")}>
+        <button
+          className="vima-quick-action"
+          onClick={() => addMessage("user", "Draft email")}
+        >
           Draft email
         </button>
-        <button className="vima-quick-action" onClick={() => addMessage("user", "Set reminder")}>
+        <button
+          className="vima-quick-action"
+          onClick={() => addMessage("user", "Set reminder")}
+        >
           Set reminder
         </button>
       </footer>
     </div>
-  )
-}
+  );
+};
+
+export default VimaInterface;
