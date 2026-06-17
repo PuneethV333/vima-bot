@@ -1,7 +1,6 @@
 import axios from "axios";
-import { ai } from "../config/gemini.config";
 import { msgType } from "../types/msg.types";
-import { llmRequestSchema, llmRequestType, llmResponseSchema } from "../types/llm.types";
+import { llmResponseSchema } from "../types/llm.types";
 import { config } from "../config/data.config";
 
 const SYSTEM_PROMPT = `You are VIMA (Voice Intelligent Machine Assistant).

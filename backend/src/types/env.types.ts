@@ -5,5 +5,6 @@ export const envSchema = z.object({
     FRONTEND_URL:z.string(),
     LLM_URL:z.string(),
     FAST_URL:z.string(),
-    GEMINI_API_Key:z.string()
+    GEMINI_API_Key:z.string(),
+    GOOGLE_SEARCH_API_KEY:z.string()
 })

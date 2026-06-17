@@ -27,7 +27,8 @@ if (!envValidation.success) {
                 "FRONTEND_URL",
                 "LLM_URL",
                 "FAST_URL",
-                "GEMINI_API_Key"
+                "GEMINI_API_Key",
+                "GOOGLE_SEARCH_API_KEY"
             ].includes(key)
         ) {
             console.error(`  ${key}: ${value ? "✅" : "❌"}`);
@@ -44,7 +45,7 @@ export const config = {
     llmUrl: envValidation.data.LLM_URL,
     fastUrl: envValidation.data.FAST_URL,
     geminiApiKey: envValidation.data.GEMINI_API_Key,
-    
+    googleSearchApiKey: envValidation.data.GOOGLE_SEARCH_API_KEY,
 } as const;
 
 console.log("✅ Configuration loaded successfully");
