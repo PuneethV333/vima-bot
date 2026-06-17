@@ -1,8 +1,8 @@
 import { msgType } from "../types/msg.types"
 import { llmChat } from "./llmChat.service"
-import { ollama } from "./ollama.service"
+import { loadHistory, saveHistory } from "../utils/history.utils"
 
-const history: msgType[] = []
+let history: msgType[] = loadHistory() 
 
 export const chatService = async (transcript: string) => {
     history.push({ role: "user", content: transcript })
@@ -10,6 +10,6 @@ export const chatService = async (transcript: string) => {
     const prevMsg = [...history.slice(-10)]
     const result = await llmChat(prevMsg)
     history.push({ role: "assistant", content: JSON.stringify(result) })
-
+    saveHistory(history)
     return result
 }
