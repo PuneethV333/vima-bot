@@ -14,8 +14,6 @@ export const chat = async (req: Request, res: Response) => {
 
         console.time("chatService");
         const result = await chatService(transcript);
-        console.log(result);
-        
 
         console.timeEnd("chatService");
 
@@ -29,6 +27,6 @@ export const chat = async (req: Request, res: Response) => {
             audioBase64
         });
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).json(getError(err));
     }
 };

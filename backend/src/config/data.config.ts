@@ -26,7 +26,8 @@ if (!envValidation.success) {
                 "PORT",
                 "FRONTEND_URL",
                 "LLM_URL",
-                "FAST_URL"
+                "FAST_URL",
+                "GEMINI_API_Key"
             ].includes(key)
         ) {
             console.error(`  ${key}: ${value ? "✅" : "❌"}`);
@@ -41,7 +42,9 @@ export const config = {
     port: envValidation.data.PORT,
     frontendUrl: envValidation.data.FRONTEND_URL,
     llmUrl: envValidation.data.LLM_URL,
-    fastUrl: envValidation.data.FAST_URL
+    fastUrl: envValidation.data.FAST_URL,
+    geminiApiKey: envValidation.data.GEMINI_API_Key,
+    
 } as const;
 
 console.log("✅ Configuration loaded successfully");

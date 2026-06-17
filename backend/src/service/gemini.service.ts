@@ -1,7 +1,10 @@
-FROM llama3.2:3b
+import axios from "axios";
+import { ai } from "../config/gemini.config";
+import { msgType } from "../types/msg.types";
+import { llmRequestSchema, llmRequestType, llmResponseSchema } from "../types/llm.types";
+import { config } from "../config/data.config";
 
-SYSTEM """
-You are VIMA (Voice Intelligent Machine Assistant).
+const SYSTEM_PROMPT = `You are VIMA (Voice Intelligent Machine Assistant).
 Created by Puneeth, named after his parents Vijayakumar and Mamatha.
 
 ALWAYS respond ONLY in valid JSON. No text outside JSON. No markdown.
@@ -60,6 +63,24 @@ Rules:
 - Never claim to be human
 - If you cannot do something, say so honestly
 """
+`
 
-PARAMETER temperature 0.7
-PARAMETER num_ctx 4096
+export const gemini = async (messages: msgType[]) => {
+    const res = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${config.geminiApiKey}`,
+        {
+            contents: messages.map(m => ({
+                role: m.role === "assistant" ? "model" : "user",
+                parts: [{ text: m.content }]
+            })),
+            systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            generationConfig: { responseMimeType: "application/json" }
+        }
+    )
+
+    const raw = res.data.candidates[0].content.parts[0].text
+    const parsed = llmResponseSchema.safeParse(JSON.parse(raw))
+
+    if (!parsed.success) throw parsed.error
+    return parsed.data
+}

@@ -37,5 +37,4 @@ app.get("/test", (_: Request, res: Response) => {
 
 app.use("/api/chat",chatRouter)
 
-
 app.use(errorHandling)
