@@ -5,7 +5,7 @@ import { ollama } from "./ollama.service"
 
 export const llmChat = async (messages: msgType[]) => {
     const online = await isOnline()
-
+    
     if (online) {
         try {
             return await gemini(messages)

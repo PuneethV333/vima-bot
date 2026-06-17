@@ -24,7 +24,10 @@ export const chat = async (req: Request, res: Response) => {
         res.json({
             transcript,
             response: result.response,
-            audioBase64
+            audioBase64,
+            tool:result.tool,
+            type:result.type,
+            params:result.params
         });
     } catch (err) {
         res.status(500).json(getError(err));

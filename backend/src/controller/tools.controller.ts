@@ -7,12 +7,16 @@ export const searchVideo = async (req:Request,res:Response) => {
     try {
         const parsed = searchVideoSchema.safeParse(req.body)
         if (!parsed.success){
+            console.log(parsed.error);
+            
             return res.status(400).json({
                 message:"which video ??"
             })
         }
+        console.log(parsed);
+        
         const data = await searchVideoOnYT(parsed.data.query)
-        console.log(data);
+        
         
         
         return res.status(200).json({
