@@ -14,13 +14,23 @@ export const ytServices = async (query?: string) => {
             }
         }
 
-        spawn("brave-browser", ["--new-tab",url], {
+        spawn("brave-browser", ["--new-tab", url], {
             detached: true,
             stdio: "ignore",
         }).unref();
     } catch (error) {
-        
+
         console.error("YouTube search failed:", error);
         throw error
     }
+};
+
+export const ytSearch = (query: string) => {
+    spawn("brave-browser", [
+        "--new-tab",
+        `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`
+    ], {
+        detached: true,
+        stdio: "ignore"
+    }).unref();
 };

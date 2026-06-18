@@ -12,14 +12,16 @@ Respond with a JSON object matching this exact shape:
   "type": "chat" | "tool",
   "speech": "what to say out loud via TTS",
   "response": "text to show in chat UI",
-  "tool": null | "youtubeSearch" | "openManhwa" | "sendEmail" | "webSearch" | "setReminder",
+  "tool": null | "youtubeSearch" | "openManhwa" | "sendEmail" | "webSearch" | "setReminder"|"youtubeOpen"|"playMusic,
   "params": {}
 }
 
 Use "type":"chat" for normal conversation, "tool" when the user wants an action performed.
 
 Available tools:
-- youtubeSearch: search and play a youtube video or song. Use this for ANY video, music, or youtube request. params: { "query": string }
+- youtubeSearch: search a youtube video or song. Use this for ANY video, or youtube request. params: { "query": string }
+- youtubeOpen:plays a youtube video or song if said to play on youtube,or youtube request.params:{"query":string}
+- playMusic:plays a music on spotify or open it.params:{"query":string}
 - openManhwa: open a manhwa reading site for a given title. params: { "query": string }
 - sendEmail: send an email. params: { "to": string, "subject": string, "body": string }
 - webSearch: search the web for current/live information (weather, news, prices, facts that change). params: { "query": string }
@@ -31,13 +33,13 @@ User: "hi"
 {"type":"chat","speech":"Hey, how can I help you?","response":"Hey, how can I help you?","tool":null,"params":{}}
 
 User: "open youtube"
-{"type":"tool","speech":"Opening YouTube","response":"Opening YouTube","tool":"youtubeSearch","params":{"query":""}}
+{"type":"tool","speech":"Opening YouTube","response":"Opening YouTube","tool":"youtubeOpen","params":{"query":""}}
 
 User: "play believer"
-{"type":"tool","speech":"Playing Believer","response":"Playing Believer","tool":"youtubeSearch","params":{"query":"Believer Imagine Dragons"}}
+{"type":"tool","speech":"Playing Believer","response":"Playing Believer","tool":"youtubeOpen","params":{"query":"Believer Imagine Dragons"}}
 
 User: "play yo yo honey singh songs on youtube"
-{"type":"tool","speech":"Playing Yo Yo Honey Singh","response":"Playing Yo Yo Honey Singh songs","tool":"youtubeSearch","params":{"query":"Yo Yo Honey Singh songs"}}
+{"type":"tool","speech":"Playing Yo Yo Honey Singh","response":"Playing Yo Yo Honey Singh songs","tool":"youtubeOpen","params":{"query":"Yo Yo Honey Singh songs"}}
 
 User: "what is the weather"
 {"type":"tool","speech":"Let me check that for you","response":"Checking weather...","tool":"webSearch","params":{"query":"weather in Bangalore today"}}
@@ -80,7 +82,7 @@ export const gemini = async (messages: msgType[]) => {
 
     const raw = res.data.candidates[0].content.parts[0].text
     const parsed = llmResponseSchema.safeParse(JSON.parse(raw))
-    
+
 
     if (!parsed.success) throw parsed.error
     return parsed.data

@@ -28,7 +28,9 @@ if (!envValidation.success) {
                 "LLM_URL",
                 "FAST_URL",
                 "GEMINI_API_Key",
-                "GOOGLE_SEARCH_API_KEY"
+                "GOOGLE_SEARCH_API_KEY",
+                "SPOTIFY_CLIENT_SECRET",
+                "SPOTIFY_CLIENT_ID"
             ].includes(key)
         ) {
             console.error(`  ${key}: ${value ? "✅" : "❌"}`);
@@ -46,6 +48,8 @@ export const config = {
     fastUrl: envValidation.data.FAST_URL,
     geminiApiKey: envValidation.data.GEMINI_API_Key,
     googleSearchApiKey: envValidation.data.GOOGLE_SEARCH_API_KEY,
+    spotifyClientId: envValidation.data.SPOTIFY_CLIENT_ID,
+    spotifyClientSecret: envValidation.data.SPOTIFY_CLIENT_SECRET,
 } as const;
 
 console.log("✅ Configuration loaded successfully");
