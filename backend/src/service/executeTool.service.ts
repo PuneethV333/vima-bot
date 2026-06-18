@@ -1,5 +1,6 @@
 import { llmResponseType } from "../types/llm.types";
 import { sendEmail } from "./sendEmail.service";
+import { sendWhatsAppMsg } from "./sendWhatsApp.service";
 import { spotifyService } from "./spotify.service";
 import { ytSearch, ytServices } from "./youtube.service";
 
@@ -19,6 +20,9 @@ export const executeTool = async (payload: llmResponseType) => {
                 break;
             case "sendEmail":
                 await sendEmail(payload.params.to,payload.params.subject,payload.params.body)
+                break
+            case "sendMessage":
+                await sendWhatsAppMsg(payload.params.to,payload.params.text)
         }
     } catch (err) {
         console.error(err);

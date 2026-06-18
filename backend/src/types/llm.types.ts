@@ -14,7 +14,7 @@ export const llmResponseSchema = z.object({
     type: z.enum(["tool", "chat"]),
     speech: z.string(),
     response: z.string(),
-    tool: z.enum(["youtubeSearch", "openManhwa", "sendEmail","playMusic","youtubeOpen"]).nullable(),
+    tool: z.enum(["youtubeSearch", "openManhwa", "sendEmail","playMusic","youtubeOpen","sendMessage"]).nullable(),
     params: z.record(z.string(), z.any())
 })
 
