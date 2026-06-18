@@ -75,3 +75,6 @@ models/
 
 history.json
 public/
+
+auth/
+auth_info/
