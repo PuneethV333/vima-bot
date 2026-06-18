@@ -8,5 +8,7 @@ export const envSchema = z.object({
     GEMINI_API_Key: z.string(),
     GOOGLE_SEARCH_API_KEY: z.string(),
     SPOTIFY_CLIENT_ID: z.string(),
-    SPOTIFY_CLIENT_SECRET: z.string()
+    SPOTIFY_CLIENT_SECRET: z.string(),
+    EMAIL_USER:z.email(),
+    EMAIL_APP_PASSWORD:z.string()
 })
