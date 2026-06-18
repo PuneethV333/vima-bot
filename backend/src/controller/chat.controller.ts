@@ -3,12 +3,13 @@ import { getError } from "../utils/error.utils";
 import { speechToText } from "../service/speechToText.service";
 import { chatService } from "../service/chat.service";
 import { textToSpeech } from "../service/textToSpeech.service";
+import { executeTool } from "../service/executeTool.service";
 
 export const chat = async (req: Request, res: Response) => {
     try {
         console.time("speechToText");
         const transcript = await speechToText(req.file!);
-        console.log(transcript);
+        // console.log(transcript);
 
         console.timeEnd("speechToText");
 
@@ -17,9 +18,15 @@ export const chat = async (req: Request, res: Response) => {
 
         console.timeEnd("chatService");
 
+        if (result.type === "tool") {
+            void executeTool(result)
+        }
+
         console.time("textToSpeech");
         const audioBase64 = await textToSpeech(result.speech);
         console.timeEnd("textToSpeech");
+
+
 
         res.json({
             transcript,
