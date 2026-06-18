@@ -7,7 +7,6 @@ import { config } from "./config/data.config"
 import cors from "cors"
 import { errorHandling } from "./middleware/error.middleware";
 import { chatRouter } from "./routes/chat.router";
-import { toolsRouter } from "./routes/tools.router";
 
 export const app = express()
 
@@ -37,6 +36,5 @@ app.get("/test", (_: Request, res: Response) => {
 });
 
 app.use("/api/chat",chatRouter)
-app.use("/api/tools",toolsRouter)
 
 app.use(errorHandling)
