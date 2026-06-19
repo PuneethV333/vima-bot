@@ -7,24 +7,24 @@ import { executeTool } from "../service/executeTool.service";
 
 export const chat = async (req: Request, res: Response) => {
     try {
-        console.time("speechToText");
+        // console.time("speechToText");
         const transcript = await speechToText(req.file!);
         // console.log(transcript);
 
-        console.timeEnd("speechToText");
+        // console.timeEnd("speechToText");
 
-        console.time("chatService");
+        // console.time("chatService");
         const result = await chatService(transcript);
 
-        console.timeEnd("chatService");
+        // console.timeEnd("chatService");
 
         if (result.type === "tool") {
             void executeTool(result)
         }
 
-        console.time("textToSpeech");
+        // console.time("textToSpeech");
         const audioBase64 = await textToSpeech(result.speech);
-        console.timeEnd("textToSpeech");
+        // console.timeEnd("textToSpeech");
 
 
 
