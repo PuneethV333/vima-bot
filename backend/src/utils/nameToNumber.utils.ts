@@ -3,9 +3,9 @@ import z from "zod";
 import { emailNameSchema } from "../types/email.type";
 import path from "path";
 
-const file = path.join(__dirname, "../constants/contact.json")
+const file = path.join(__dirname,"../constants/contact.json")
 
-export const resolveEmail = (name: string): string | null => {
+export const resolveNumber = (name: string): string | null => {
     if (!fs.existsSync(file)) {
         throw new Error("dir not found")
     }
@@ -20,6 +20,6 @@ export const resolveEmail = (name: string): string | null => {
         c.name.some((n) => n.toLowerCase() === normalize)
     );
 
-    return contact?.id ?? null;
+    return contact?.number ?? null;
 
 };

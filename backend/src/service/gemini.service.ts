@@ -12,13 +12,14 @@ Respond with a JSON object matching this exact shape:
   "type": "chat" | "tool",
   "speech": "what to say out loud via TTS",
   "response": "text to show in chat UI",
-  "tool": null | "youtubeSearch" | "openManhwa" | "sendEmail" |"youtubeOpen" |"playMusic",
+  "tool": null | "youtubeSearch" | "openManhwa" | "sendEmail" |"youtubeOpen" |"playMusic"|"sendMessage,
   "params": {}
 }
 
 Use "type":"chat" for normal conversation, "tool" when the user wants an action performed.
 
 Available tools:
+- sendMessage: send message via whatsapp.params:{"to":string,"text":string}
 - youtubeSearch: search a youtube video or song. Use this for ANY video, or youtube request. params: { "query": string }
 - youtubeOpen:plays a youtube video or song if said to play on youtube,or youtube request.params:{"query":string}
 - playMusic:plays a music on spotify or open it.params:{"query":string}
