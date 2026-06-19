@@ -6,8 +6,6 @@ import { ytSearch, ytServices } from "./youtube.service";
 
 export const executeTool = async (payload: llmResponseType) => {
     try {
-        console.log(payload?.params);
-        
         switch (payload.tool) {
             case "youtubeOpen":
                 await ytServices(payload?.params?.query);

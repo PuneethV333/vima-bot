@@ -4,6 +4,7 @@ import makeWASocket, {
 } from '@whiskeysockets/baileys';
 import qrcode from 'qrcode-terminal';
 import { Boom } from '@hapi/boom';
+import P from 'pino'
 
 let sock: ReturnType<typeof makeWASocket>;
 
@@ -12,6 +13,7 @@ export async function connectToWhatsApp(): Promise<typeof sock> {
 
     sock = makeWASocket({
         auth: state,
+        logger: P({ level: 'silent' }),
     });
 
     sock.ev.on('creds.update', saveCreds);

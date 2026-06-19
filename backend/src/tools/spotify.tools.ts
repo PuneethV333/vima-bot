@@ -5,7 +5,6 @@ import { getSpotifyToken } from "../utils/getSpotifyToken.utils";
 export const searchTrack = async (query: string) => {
     const token = await getSpotifyToken()
     
-    console.log(token);
     
     const res = await axios.get("https://api.spotify.com/v1/search", {
         headers: {
