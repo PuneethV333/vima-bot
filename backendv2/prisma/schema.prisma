@@ -1,0 +1,133 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../src/generated/prisma"
+}
+
+datasource db {
+    provider = "sqlite"
+    // url      = env("DATABASE_URL")
+}
+
+enum ModelMode {
+    local
+    nonLocal
+}
+
+enum MessageRole {
+    user
+    assistant
+    system
+}
+
+model User {
+    id        String    @id @default(cuid())
+    name      String
+    modelMode ModelMode @default(local)
+
+    settingsId String?   @unique
+    settings   Settings? @relation(fields: [settingsId], references: [id])
+
+    contacts      Contact[]
+    conversations Conversation[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Contact {
+    id String @id @default(cuid())
+
+    googleId String? @unique
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    name        String
+    phoneNumber String?
+    email       String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Conversation {
+    id String @id @default(cuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    title String?
+
+    messages Message[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Message {
+    id String @id @default(cuid())
+
+    conversationId String
+    conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+    role MessageRole
+
+    content String
+
+    createdAt DateTime @default(now())
+}
+
+model Settings {
+    id String @id @default(cuid())
+
+    setupCompleted Boolean @default(false)
+
+    /*
+     * Email (optional SMTP fallback)
+     */
+    email               String?
+    emailAppPasswordEnc String?
+
+    /*
+     * AI Providers
+     */
+    geminiApiKeyEnc String?
+
+    /*
+     * Search
+     */
+    searchApiKeyEnc String?
+
+    /*
+     * Google OAuth
+     */
+    googleId               String?
+    googleRefreshTokenEnc  String?
+    googleTokenExpiry      DateTime?
+    googleConnectedAt      DateTime?
+
+    /*
+     * Spotify OAutIh
+     */
+    spotifyUserId           String?
+    spotifyAccessTokenEnc   String?
+    spotifyRefreshTokenEnc  String?
+    spotifyTokenExpiry      DateTime?
+    spotifyConnectedAt      DateTime?
+
+    /*
+     * WhatsApp (Baileys)
+     */
+    whatsappLinked  Boolean @default(false)
+    whatsappSession String?
+
+    /*
+     * Local LLM
+     */
+    localModel String?
+
+    user User?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
