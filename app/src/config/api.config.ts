@@ -6,6 +6,6 @@ console.log(config);
 export const api = axios.create({
     baseURL: config.backendUrl,
     headers: {
-        "Content-Type":"multipart/form-data"
+        "Content-Type": "application/json",
     }
 })

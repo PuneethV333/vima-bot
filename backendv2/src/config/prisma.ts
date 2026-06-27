@@ -1,8 +1,10 @@
-import { PrismaPg } from "@prisma/adapter-pg"
-import { config } from "./data.config"
-import { PrismaClient } from "../generated/prisma/client"
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { config } from "./data.config";
+import { PrismaClient } from "../generated/prisma/client";
 
-const adapter = new PrismaPg(config.dbUrl)
-const prisma = new PrismaClient({ adapter })
+const adapter = new PrismaBetterSqlite3({
+    url: config.dbUrl,
+});
+const prisma = new PrismaClient({ adapter });
 
-export { prisma }
+export {prisma}

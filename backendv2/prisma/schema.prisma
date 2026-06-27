@@ -5,12 +5,12 @@ generator client {
 
 datasource db {
     provider = "sqlite"
-    // url      = env("DATABASE_URL")
 }
 
 enum ModelMode {
     local
-    nonLocal
+    cloud
+    hybrid
 }
 
 enum MessageRole {
@@ -20,15 +20,79 @@ enum MessageRole {
 }
 
 model User {
-    id        String    @id @default(cuid())
-    name      String
-    modelMode ModelMode @default(local)
+    id   String @id @default(cuid())
+    name String
 
-    settingsId String?   @unique
-    settings   Settings? @relation(fields: [settingsId], references: [id])
+    profileComplete Boolean @default(false)
 
+    settings      Settings?
     contacts      Contact[]
     conversations Conversation[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Settings {
+    id String @id @default(cuid())
+
+    userId String @unique
+    user   User   @relation(fields: [userId], references: [id])
+
+    setupCompleted Boolean @default(false)
+
+    /**
+     * LLM config
+     */
+    /**
+     * /*
+     * LLM config
+     */
+    modelMode ModelMode @default(local)
+
+    // ollama
+    localModel          String?
+    localModelInstalled Boolean @default(false)
+
+    // whisper
+    whisperModel          String?
+    whisperModelInstalled Boolean @default(false)
+
+    geminiApiKeyEnc String?
+
+    /**
+     * Email (optional SMTP fallback)
+     */
+    email               String?
+    emailAppPasswordEnc String?
+
+    /**
+     * Search
+     */
+    searchApiKeyEnc String?
+
+    /**
+     * Google OAuth
+     */
+    googleId              String?
+    googleRefreshTokenEnc String?
+    googleTokenExpiry     DateTime?
+    googleConnectedAt     DateTime?
+
+    /**
+     * Spotify OAuth
+     */
+    spotifyUserId          String?
+    spotifyAccessTokenEnc  String?
+    spotifyRefreshTokenEnc String?
+    spotifyTokenExpiry     DateTime?
+    spotifyConnectedAt     DateTime?
+
+    /**
+     * WhatsApp (Baileys)
+     */
+    whatsappLinked      Boolean @default(false)
+    whatsappSessionPath String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -37,10 +101,10 @@ model User {
 model Contact {
     id String @id @default(cuid())
 
-    googleId String? @unique
-
     userId String
     user   User   @relation(fields: [userId], references: [id])
+
+    googleId String? @unique
 
     name        String
     phoneNumber String?
@@ -56,8 +120,7 @@ model Conversation {
     userId String
     user   User   @relation(fields: [userId], references: [id])
 
-    title String?
-
+    title    String?
     messages Message[]
 
     createdAt DateTime @default(now())
@@ -70,64 +133,8 @@ model Message {
     conversationId String
     conversation   Conversation @relation(fields: [conversationId], references: [id])
 
-    role MessageRole
-
+    role    MessageRole
     content String
 
     createdAt DateTime @default(now())
-}
-
-model Settings {
-    id String @id @default(cuid())
-
-    setupCompleted Boolean @default(false)
-
-    /*
-     * Email (optional SMTP fallback)
-     */
-    email               String?
-    emailAppPasswordEnc String?
-
-    /*
-     * AI Providers
-     */
-    geminiApiKeyEnc String?
-
-    /*
-     * Search
-     */
-    searchApiKeyEnc String?
-
-    /*
-     * Google OAuth
-     */
-    googleId               String?
-    googleRefreshTokenEnc  String?
-    googleTokenExpiry      DateTime?
-    googleConnectedAt      DateTime?
-
-    /*
-     * Spotify OAutIh
-     */
-    spotifyUserId           String?
-    spotifyAccessTokenEnc   String?
-    spotifyRefreshTokenEnc  String?
-    spotifyTokenExpiry      DateTime?
-    spotifyConnectedAt      DateTime?
-
-    /*
-     * WhatsApp (Baileys)
-     */
-    whatsappLinked  Boolean @default(false)
-    whatsappSession String?
-
-    /*
-     * Local LLM
-     */
-    localModel String?
-
-    user User?
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 }
