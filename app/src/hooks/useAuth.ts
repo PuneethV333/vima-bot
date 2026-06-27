@@ -10,27 +10,31 @@ export const useGetMe = () =>
         retry: false
     })
 
-export const useAuth = () => {
+export const useAuth = (onSuccess: () => void) => {
     const queryClient = useQueryClient()
-
     return useMutation({
         mutationFn: authApi,
         onSuccess: (res, variables) => {
-            toast.success("Setup complete")
             queryClient.setQueryData(["me"], res)
-
             connectWS()
 
-            const ws = getSocket()
-            ws.onopen = () => {
+            const ws = getSocket()!
+
+            const send = () => {
+                console.log("sending PULL_MODELS")
                 sendWS("PULL_MODELS", {
                     ollamaModel: variables.model,
-                    whisperModel: variables.whisperModel
+                    whisperModel: variables.whisperModel,
                 })
+                onSuccess()
+            }
+
+            if (ws.readyState === WebSocket.OPEN) {
+                send()
+            } else {
+                ws.onopen = send
             }
         },
-        onError: () => {
-            toast.error("Failed, try again")
-        }
+        onError: () => toast.error("Failed, try again")
     })
 }

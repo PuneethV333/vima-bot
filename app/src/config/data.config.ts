@@ -1,7 +1,6 @@
 import type { envType } from "@/types/env.type";
 
-
-
 export const config: envType = {
-    backendUrl: import.meta.env.VITE_BACKEND_URL
+    backendUrl: import.meta.env.VITE_BACKEND_URL,
+    webSocketUrl: import.meta.env.VITE_WEBSOCKET_URL
 }

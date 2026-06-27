@@ -65,9 +65,10 @@ export type WhisperModel = typeof WHISPER_MODELS[keyof typeof WHISPER_MODELS]
 export const pullWhisper = (ws: WebSocket, model: WhisperModel) => {
     const proc = spawn("python3", ["-c", `
 from faster_whisper import WhisperModel
-WhisperModel("${model}", download_root="./models")
+model = WhisperModel("${model}", download_root="./models")
 print("done")
 `])
+
 
     proc.stdout.on("data", (chunk) => {
         ws.send(JSON.stringify({ type: "WHISPER_PROGRESS", data: chunk.toString() }))

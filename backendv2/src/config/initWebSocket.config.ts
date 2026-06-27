@@ -14,12 +14,13 @@ export const initWebSocket = (server: http.Server<typeof http.IncomingMessage, t
 
 
         ws.on("message", (msg) => {
+            console.log("RAW MESSAGE:", msg.toString())
             try {
                 const payload = JSON.parse(msg.toString())
 
                 switch (payload.type) {
                     case "PULL_MODELS": {
-                        const { ollamaModel, whisperModel } = payload
+                        const { ollamaModel, whisperModel } = payload.payload  // ← add .payload
                         if (!ollamaModel || !whisperModel) {
                             ws.send(JSON.stringify({ type: "ERROR", message: "Missing model names" }))
                             break

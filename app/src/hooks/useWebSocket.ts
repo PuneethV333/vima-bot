@@ -1,20 +1,32 @@
-import { useEffect, useState } from "react"
-import { connectWS, socket } from "@/lib/ws"
+import { getSocket } from "@/lib/ws";
+import { useEffect, useState } from "react";
 
 export const useWebSocket = () => {
-    const [lastMessage, setLastMessage] = useState<{ type: string; payload: unknown } | null>(null)
+    const [lastMessage, setLastMessage] = useState<{ type: string; data?: unknown } | null>(null)
     const [status, setStatus] = useState<"connecting" | "connected" | "disconnected">("disconnected")
 
     useEffect(() => {
-        if (!socket) connectWS()
+        const attach = () => {
+            const ws = getSocket()
+            if (!ws) return false
 
-        const ws = socket!
+            ws.onopen = () => setStatus("connected")
+            ws.onclose = () => setStatus("disconnected")
+            ws.onmessage = (event) => {
+                const parsed = JSON.parse(event.data)
+                console.log("[WS]", parsed)
+                setLastMessage(parsed)
+            }
 
-        ws.onopen = () => setStatus("connected")
-        ws.onclose = () => setStatus("disconnected")
-        ws.onmessage = (event) => {
-            const { type, payload } = JSON.parse(event.data)
-            setLastMessage({ type, payload })
+            if (ws.readyState === WebSocket.OPEN) setStatus("connected")
+            return true
+        }
+
+        if (!attach()) {
+            const interval = setInterval(() => {
+                if (attach()) clearInterval(interval)
+            }, 100)
+            return () => clearInterval(interval)
         }
     }, [])
 

@@ -1,3 +1,4 @@
 export interface envType {
-    backendUrl:string
+    backendUrl:string,
+    webSocketUrl:string
 }
