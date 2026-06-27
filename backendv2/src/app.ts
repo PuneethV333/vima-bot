@@ -8,6 +8,8 @@ import cors from "cors"
 import { config } from "./config/data.config.js";
 import http from "http"
 import { initWebSocket } from "./config/initWebSocket.config.js";
+import { errorHandling } from "./middleware/error.middleware.js";
+import { authRouter } from "./routes/auth.routes.js";
 
 export const app = express()
 
@@ -40,3 +42,6 @@ app.get("/test", (_: Request, res: Response) => {
     res.send("Server is running");
 });
 
+app.use('/api/auth', authRouter)
+
+app.use(errorHandling)

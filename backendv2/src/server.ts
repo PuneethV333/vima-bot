@@ -1,16 +1,14 @@
 
 import { app, server } from "./app";
-// import { connectToWhatsApp, sendWhatsAppMessage } from "./config/baileys.config";
 import { config } from "./config/data.config";
+import { connectToDb } from "./config/db.config";
 
 
 const PORT: number = Number(config.port)
 
 const startServer = async () => {
     try {
-        // await connectToWhatsApp()
-        
-        
+        await connectToDb()
 
         server.listen(PORT, () => {
             console.log(`server running on ${PORT}`);

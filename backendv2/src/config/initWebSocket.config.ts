@@ -5,10 +5,13 @@ export const initWebSocket = (server: http.Server<typeof http.IncomingMessage, t
     const wss = new WebSocketServer({ server })
     wss.on("connection", (ws) => {
         console.log("Client connect");
-        ws.send("Welcome")
+        if (ws.readyState === ws.OPEN) {
+            ws.send("Welcome")
+        }
+
 
         ws.on("message", (msg) => {
-            console.log(`Revived message:${msg.toString()}`);
+            console.log(`Received message:${msg.toString()}`);
             ws.send(`ECHO:${msg}`)
         })
 
