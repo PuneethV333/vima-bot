@@ -45,6 +45,8 @@ model Settings {
      * LLM config
      */
     /**
+     * /**
+     * /**
      * /*
      * LLM config
      */
@@ -55,8 +57,7 @@ model Settings {
     localModelInstalled Boolean @default(false)
 
     // whisper
-    whisperModel          String?
-    whisperModelInstalled Boolean @default(false)
+    whisperModel String?
 
     geminiApiKeyEnc String?
 
@@ -76,6 +77,7 @@ model Settings {
      */
     googleId              String?
     googleRefreshTokenEnc String?
+    googleClientSecret    String?
     googleTokenExpiry     DateTime?
     googleConnectedAt     DateTime?
 

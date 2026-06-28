@@ -16,7 +16,7 @@ export type OllamaModel =
 export const pullOllama = (
     ws: WebSocket,
     model: OllamaModel,
-    onDone: () => void
+    
 ) => {
     const proc = spawn("ollama", ["pull", model]);
 
@@ -40,7 +40,6 @@ export const pullOllama = (
                 })
             );
 
-            onDone();
         } else {
             ws.send(
                 JSON.stringify({
@@ -50,43 +49,3 @@ export const pullOllama = (
         }
     });
 };
-
-
-export const WHISPER_MODELS = {
-    TINY: "tiny",
-    BASE: "base",
-    SMALL: "small",
-    MEDIUM: "medium",
-    LARGE: "large",
-} as const
-
-export type WhisperModel = typeof WHISPER_MODELS[keyof typeof WHISPER_MODELS]
-
-export const pullWhisper = (ws: WebSocket, model: WhisperModel) => {
-    const proc = spawn("python3", ["-c", `
-from faster_whisper import WhisperModel
-model = WhisperModel("${model}", download_root="./models")
-print("done")
-`])
-
-
-    proc.stdout.on("data", (chunk) => {
-        ws.send(JSON.stringify({ type: "WHISPER_PROGRESS", data: chunk.toString() }))
-    })
-
-    proc.stderr.on("data", (chunk) => {
-        ws.send(JSON.stringify({ type: "WHISPER_PROGRESS", data: chunk.toString() }))
-    })
-
-    proc.on("close", async (code) => {
-        if (code === 0) {
-            await prisma.settings.updateMany({
-                data: { whisperModelInstalled: true }
-            })
-
-            ws.send(JSON.stringify({ type: "WHISPER_DONE" }))
-        } else {
-            ws.send(JSON.stringify({ type: "WHISPER_ERROR" }))
-        }
-    })
-}

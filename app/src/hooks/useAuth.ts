@@ -24,7 +24,6 @@ export const useAuth = (onSuccess: () => void) => {
                 console.log("sending PULL_MODELS")
                 sendWS("PULL_MODELS", {
                     ollamaModel: variables.model,
-                    whisperModel: variables.whisperModel,
                 })
                 onSuccess()
             }

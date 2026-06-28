@@ -1,7 +1,6 @@
 import http from "http"
 import { WebSocketServer } from "ws"
-import { OllamaModel, pullOllama, pullWhisper, WhisperModel } from "../service/pull.service"
-
+import { OllamaModel, pullOllama } from "../service/pull.service"
 
 
 export const initWebSocket = (server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>) => {
@@ -20,14 +19,12 @@ export const initWebSocket = (server: http.Server<typeof http.IncomingMessage, t
 
                 switch (payload.type) {
                     case "PULL_MODELS": {
-                        const { ollamaModel, whisperModel } = payload.payload  // ← add .payload
-                        if (!ollamaModel || !whisperModel) {
+                        const { ollamaModel } = payload.payload  // ← add .payload
+                        if (!ollamaModel ) {
                             ws.send(JSON.stringify({ type: "ERROR", message: "Missing model names" }))
                             break
                         }
-                        pullOllama(ws, ollamaModel as OllamaModel, () => {
-                            pullWhisper(ws, whisperModel as WhisperModel)
-                        })
+                        pullOllama(ws, ollamaModel as OllamaModel)
                         break
                     }
                 }
