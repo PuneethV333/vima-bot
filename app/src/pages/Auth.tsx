@@ -1,5 +1,6 @@
 import { ConnectGoogleStep } from "@/components/auth/ConnectGoogleStep";
 import { ConnectSpotifyStep } from "@/components/auth/ConnectSpotifyStep";
+import { ConnectWhatsAppStep } from "@/components/auth/ConnectWhatsAppStep";
 import { DownloadStep } from "@/components/auth/DownloadStep";
 import { SetupStep } from "@/components/auth/SetupStep";
 import type { Step } from "@/types/auth.type";
@@ -13,6 +14,7 @@ export const Auth = () => {
     downloading: { index: 2, label: "Models" },
     connect_google: { index: 3, label: "Google" },
     connect_spotify: { index: 4, label: "Spotify" },
+    connect_whatsapp: { index: 5, label: "WhatsApp" },
   };
 
   const current = STEP_META[step];
@@ -22,7 +24,7 @@ export const Auth = () => {
       <div className="w-full max-w-md">
         <div className="mb-5 px-1">
           <p className="font-mono text-[10px] sm:text-xs text-muted-foreground uppercase tracking-widest mb-2">
-            Step {current.index} of 4 · {current.label}
+            Step {current.index} of 5 · {current.label}
           </p>
           <h1 className="text-lg sm:text-xl font-medium">
             {step === "setup" && "Set up your assistant"}
@@ -54,11 +56,14 @@ export const Auth = () => {
           )}
           {step === "connect_spotify" && (
             <ConnectSpotifyStep
+              onDone={() => setStep("connect_whatsapp")}
+              onSkip={() => setStep("connect_whatsapp")}
+            />
+          )}
+          {step === "connect_whatsapp" && (
+            <ConnectWhatsAppStep
               onDone={() => {
-                // invalidate ["me"]
-              }}
-              onSkip={() => {
-                // invalidate ["me"]
+                /* invalidate ["me"] */
               }}
             />
           )}

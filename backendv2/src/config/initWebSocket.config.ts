@@ -3,6 +3,7 @@ import { WebSocketServer } from "ws"
 import { OllamaModel, pullOllama } from "../service/pull.service"
 import { oauth2Client } from "./oAuth.config"
 import { spotifyApi } from "./spotify.config"
+import { connectToWhatsApp } from "../controller/whatsapp.controller"
 
 
 let wss: WebSocketServer
@@ -54,6 +55,12 @@ export const initWebSocket = (server: http.Server) => {
                             "app-remote-control",
                         ], "vima-state")
                         ws.send(JSON.stringify({ type: "SPOTIFY_AUTH_URL", data: url }))
+                        break
+                    }
+
+                    case "WHATSAPP_INIT": {
+                        connectToWhatsApp()
+                        ws.send(JSON.stringify({ type: "WHATSAPP_STARTING" }))
                         break
                     }
                 }
