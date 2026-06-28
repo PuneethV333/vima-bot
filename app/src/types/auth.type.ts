@@ -18,7 +18,7 @@ export const FormDataSchema = z.object({
 
 export type FormData = z.infer<typeof FormDataSchema>
 
-export type Step = "setup" | "downloading" | "connect_google";
+export type Step = "setup" | "downloading" | "connect_google" | "connect_spotify";
 
 export type DownloadState = {
     ollamaProgress: string;

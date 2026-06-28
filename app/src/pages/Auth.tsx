@@ -1,7 +1,7 @@
 import { ConnectGoogleStep } from "@/components/auth/ConnectGoogleStep";
+import { ConnectSpotifyStep } from "@/components/auth/ConnectSpotifyStep";
 import { DownloadStep } from "@/components/auth/DownloadStep";
 import { SetupStep } from "@/components/auth/SetupStep";
-// import { ConnectGoogleStep } from "@/components/auth/ConnectGoogleStep";
 import type { Step } from "@/types/auth.type";
 import { useState } from "react";
 
@@ -12,6 +12,7 @@ export const Auth = () => {
     setup: { index: 1, label: "Profile" },
     downloading: { index: 2, label: "Models" },
     connect_google: { index: 3, label: "Google" },
+    connect_spotify: { index: 4, label: "Spotify" },
   };
 
   const current = STEP_META[step];
@@ -21,12 +22,13 @@ export const Auth = () => {
       <div className="w-full max-w-md">
         <div className="mb-5 px-1">
           <p className="font-mono text-[10px] sm:text-xs text-muted-foreground uppercase tracking-widest mb-2">
-            Step {current.index} of 3 · {current.label}
+            Step {current.index} of 4 · {current.label}
           </p>
           <h1 className="text-lg sm:text-xl font-medium">
             {step === "setup" && "Set up your assistant"}
             {step === "downloading" && "Downloading models"}
             {step === "connect_google" && "Connect Google"}
+            {step === "connect_spotify" && "Connect Spotify"}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             {step === "setup" &&
@@ -35,6 +37,8 @@ export const Auth = () => {
               "This may take a few minutes. Keep this window open."}
             {step === "connect_google" &&
               "Required to send emails and access Google services."}
+            {step === "connect_spotify" &&
+              "Required to control music playback and search tracks."}
           </p>
         </div>
 
@@ -46,7 +50,10 @@ export const Auth = () => {
             <DownloadStep onDone={() => setStep("connect_google")} />
           )}
           {step === "connect_google" && (
-            <ConnectGoogleStep
+            <ConnectGoogleStep onDone={() => setStep("connect_spotify")} />
+          )}
+          {step === "connect_spotify" && (
+            <ConnectSpotifyStep
               onDone={() => {
                 // invalidate ["me"]
               }}
