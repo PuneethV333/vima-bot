@@ -5,7 +5,7 @@ import { prisma } from "./prisma";
 export const spotifyApi = new SpotifyWebApi({
     clientId: config.spotifyClientId,
     clientSecret: config.spotifyClientSecret,
-    redirectUri: `http://localhost:${config.port}/auth/spotify/callback`
+    redirectUri: `http://127.0.0.1:${config.port}/auth/spotify/callback`
 })
 
 export const getSpotifyClient = async () => {

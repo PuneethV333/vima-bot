@@ -57,6 +57,9 @@ export const Auth = () => {
               onDone={() => {
                 // invalidate ["me"]
               }}
+              onSkip={() => {
+                // invalidate ["me"]
+              }}
             />
           )}
         </div>

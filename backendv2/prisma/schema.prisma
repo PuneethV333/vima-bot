@@ -47,6 +47,8 @@ model Settings {
     /**
      * /**
      * /**
+     * /**
+     * /**
      * /*
      * LLM config
      */
@@ -84,6 +86,8 @@ model Settings {
     /**
      * Spotify OAuth
      */
+
+    spotifyAuthComplete    Boolean   @default(false)
     spotifyUserId          String?
     spotifyAccessTokenEnc  String?
     spotifyRefreshTokenEnc String?
