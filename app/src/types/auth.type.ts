@@ -18,23 +18,23 @@ export const FormDataSchema = z.object({
 
 export type FormData = z.infer<typeof FormDataSchema>
 
-export type Step = "setup" | "downloading";
+export type Step = "setup" | "downloading" | "connect_google";
 
 export type DownloadState = {
-  ollamaProgress: string;
-  ollamaDone: boolean;
-  ollamaError: boolean;
-  whisperProgress: string;
-  whisperDone: boolean;
-  whisperError: boolean;
+    ollamaProgress: string;
+    ollamaDone: boolean;
+    ollamaError: boolean;
+    whisperProgress: string;
+    whisperDone: boolean;
+    whisperError: boolean;
 };
 
 
 export type CardProps = {
-  label: string;
-  progress: string;
-  done: boolean;
-  error: boolean;
-  active: boolean;
-  pending?: boolean;
+    label: string;
+    progress: string;
+    done: boolean;
+    error: boolean;
+    active: boolean;
+    pending?: boolean;
 };

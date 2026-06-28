@@ -33,7 +33,9 @@ if (!envValidation.success) {
                 "SPOTIFY_CLIENT_ID",
                 "EMAIL_APP_PASSWORD",
                 "EMAIL_USER",
-                "DATABASE_URL"
+                "DATABASE_URL",
+                "GOOGLE_CLIENT_ID",
+                "GOOGLE_CLIENT_SECRET",
             ].includes(key)
         ) {
             console.error(`  ${key}: ${value ? "✅" : "❌"}`);
@@ -53,9 +55,11 @@ export const config = {
     googleSearchApiKey: envValidation.data.GOOGLE_SEARCH_API_KEY,
     spotifyClientId: envValidation.data.SPOTIFY_CLIENT_ID,
     spotifyClientSecret: envValidation.data.SPOTIFY_CLIENT_SECRET,
-    clientEmail:envValidation.data.EMAIL_USER,
-    password:envValidation.data.EMAIL_APP_PASSWORD,
-    dbUrl:envValidation.data.DATABASE_URL
+    clientEmail: envValidation.data.EMAIL_USER,
+    password: envValidation.data.EMAIL_APP_PASSWORD,
+    dbUrl: envValidation.data.DATABASE_URL,
+    clientId: envValidation.data.GOOGLE_CLIENT_ID,
+    clientSecret: envValidation.data.GOOGLE_CLIENT_SECRET
 } as const;
 
 console.log("✅ Configuration loaded successfully");

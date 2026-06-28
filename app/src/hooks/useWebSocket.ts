@@ -30,5 +30,14 @@ export const useWebSocket = () => {
         }
     }, [])
 
-    return { lastMessage, status }
+    const sendMessage = (payload: object) => {
+        const ws = getSocket()
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+            console.warn("[WS] Not connected, cannot send message")
+            return
+        }
+        ws.send(JSON.stringify(payload))
+    }
+
+    return { lastMessage, status, sendMessage }
 }
