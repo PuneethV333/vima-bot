@@ -1,7 +1,8 @@
 import http from "http"
 import { WebSocketServer } from "ws"
 import { OllamaModel, pullOllama } from "../service/pull.service"
-import { oauth2Client } from "./oAuth.clinet"
+import { oauth2Client } from "./oAuth.config"
+import { spotifyApi } from "./spotify.config"
 
 
 let wss: WebSocketServer
@@ -41,6 +42,18 @@ export const initWebSocket = (server: http.Server) => {
                             scope: ["https://mail.google.com/"],
                         })
                         ws.send(JSON.stringify({ type: "GOOGLE_AUTH_URL", data: url }))
+                        break
+                    }
+
+                    case "SPOTIFY_OAUTH": {
+                        const url = spotifyApi.createAuthorizeURL([
+                            "user-read-playback-state",
+                            "user-modify-playback-state",
+                            "user-read-currently-playing",
+                            "streaming",
+                            "app-remote-control",
+                        ], "vima-state")
+                        ws.send(JSON.stringify({ type: "SPOTIFY_AUTH_URL", data: url }))
                         break
                     }
                 }

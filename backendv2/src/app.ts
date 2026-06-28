@@ -11,6 +11,7 @@ import { initWebSocket } from "./config/initWebSocket.config.js";
 import { errorHandling } from "./middleware/error.middleware.js";
 import { authRouter } from "./routes/auth.routes.js";
 import { googleRouter } from "./routes/google.routes.js";
+import { spotifyRouter } from "./routes/spotify.routes.js";
 
 export const app = express()
 
@@ -45,5 +46,6 @@ app.get("/test", (_: Request, res: Response) => {
 
 app.use('/api/auth', authRouter)
 app.use(googleRouter)
+app.use(spotifyRouter)
 
 app.use(errorHandling)
