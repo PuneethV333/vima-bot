@@ -41,17 +41,7 @@ model Settings {
 
     setupCompleted Boolean @default(false)
 
-    /**
-     * LLM config
-     */
-    /**
-     * /**
-     * /**
-     * /**
-     * /**
-     * /**
-     * /**
-     * /*
+     /* 
      * LLM config
      */
     modelMode ModelMode @default(local)
@@ -65,18 +55,18 @@ model Settings {
 
     geminiApiKeyEnc String?
 
-    /**
+    /*
      * Email (optional SMTP fallback)
      */
     email               String?
     emailAppPasswordEnc String?
 
-    /**
+    /*
      * Search
      */
     searchApiKeyEnc String?
 
-    /**
+    /*
      * Google OAuth
      */
     googleId              String?
@@ -85,7 +75,7 @@ model Settings {
     googleTokenExpiry     DateTime?
     googleConnectedAt     DateTime?
 
-    /**
+    /*
      * Spotify OAuth
      */
 
@@ -111,8 +101,6 @@ model Contact {
 
     userId String
     user   User   @relation(fields: [userId], references: [id])
-
-    googleId String? @unique
 
     name        String
     phoneNumber String?

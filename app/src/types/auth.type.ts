@@ -7,18 +7,25 @@ export const getMeSchema = z.object({
 
 export type getMe = z.infer<typeof getMeSchema>
 
-
 export const FormDataSchema = z.object({
     name: z.string().min(1, "Name is required"),
     env: z.enum(["local", "cloud", "hybrid"]),
     model: z.string().optional(),
     apiKey: z.string().optional(),
-    whisperModel: z.enum(["tiny", "base", "small", "medium", "large"]).default("small"),
+    whisperModel: z.enum(["tiny", "base", "small", "medium", "large"]),
+}).superRefine((data, ctx) => {
+    if ((data.env !== "local") && !data.apiKey?.trim()) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["apiKey"],
+            message: "Gemini Api not provided"
+        })
+    }
 })
 
 export type FormData = z.infer<typeof FormDataSchema>
 
-export type Step = "setup" | "downloading" | "connect_google" | "connect_spotify" | "connect_whatsapp"|"sync_contact";
+export type Step = "setup" | "downloading" | "connect_google" | "connect_spotify" | "connect_whatsapp" | "sync_contact";
 
 export type DownloadState = {
     ollamaProgress: string;
