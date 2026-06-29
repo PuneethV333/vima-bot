@@ -49,6 +49,8 @@ model Settings {
      * /**
      * /**
      * /**
+     * /**
+     * /**
      * /*
      * LLM config
      */

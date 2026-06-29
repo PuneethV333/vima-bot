@@ -31,13 +31,13 @@ export async function connectToWhatsApp(): Promise<typeof sock> {
                 const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
 
                 if (shouldReconnect) {
-                    connectToWhatsApp().then(resolve).catch(reject); // reconnect and resolve once it's back open
+                    connectToWhatsApp().then(resolve).catch(reject);
                 } else {
                     reject(new Error('Logged out — delete auth_info and re-scan QR'));
                 }
             } else if (connection === 'open') {
                 console.log('WhatsApp connected!');
-                resolve(sock); // only resolves here, once truly ready
+                resolve(sock);
             }
         });
     });

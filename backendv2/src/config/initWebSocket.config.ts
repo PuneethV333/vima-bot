@@ -4,6 +4,7 @@ import { OllamaModel, pullOllama } from "../service/pull.service"
 import { oauth2Client } from "./oAuth.config"
 import { spotifyApi } from "./spotify.config"
 import { connectToWhatsApp } from "../controller/whatsapp.controller"
+import { syncContacts } from "../controller/google.controller"
 
 
 let wss: WebSocketServer
@@ -61,6 +62,19 @@ export const initWebSocket = (server: http.Server) => {
                     case "WHATSAPP_INIT": {
                         connectToWhatsApp()
                         ws.send(JSON.stringify({ type: "WHATSAPP_STARTING" }))
+                        break
+                    }
+
+                    case "SYNC_CONTACTS": {
+                        syncContacts()
+                            .then((count) => {
+                                ws.send(JSON.stringify({ type: "CONTACTS_SYNCED", data: count }))
+                            })
+                            .catch((err) => {
+                                console.error(err)
+                                ws.send(JSON.stringify({ type: "CONTACTS_ERROR" }))
+                            })
+                        ws.send(JSON.stringify({ type: "CONTACTS_SYNCING" }))
                         break
                     }
                 }

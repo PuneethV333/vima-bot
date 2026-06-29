@@ -3,6 +3,7 @@ import { oauth2Client } from "../config/oAuth.config"
 import { prisma } from "../config/prisma"
 import { getWss } from "../config/initWebSocket.config"
 import { config } from "../config/data.config"
+import { getGoogleContacts } from "../service/getContact.service"
 
 export const googleCallBack = async (req: Request, res: Response) => {
     try {
@@ -16,8 +17,8 @@ export const googleCallBack = async (req: Request, res: Response) => {
                 googleTokenExpiry: new Date(tokens.expiry_date!),
                 googleConnectedAt: new Date(),
                 googleId: tokenInfo.email,
-                email:tokenInfo.email,
-                googleClientSecret:config.clientSecret
+                email: tokenInfo.email,
+                googleClientSecret: config.clientSecret
             }
         })
 
@@ -55,4 +56,28 @@ export const googleCallBack = async (req: Request, res: Response) => {
         })
         res.send("<script>window.close()</script>")
     }
+}
+
+export const syncContacts = async () => {
+    const contacts = await getGoogleContacts()
+    const settings = await prisma.settings.findFirst()
+
+    if (!settings) return
+
+    await prisma.contact.deleteMany({
+        where: {
+            userId: settings.userId
+        }
+    })
+    
+    await prisma.contact.createMany({
+        data:contacts.map((contact) => ({
+            userId:settings.userId,
+            name:contact.name,
+            email:contact.email,
+            phoneNumber:contact.phone
+        }))
+    })
+    
+    return contacts.length
 }

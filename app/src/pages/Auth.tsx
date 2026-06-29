@@ -3,6 +3,7 @@ import { ConnectSpotifyStep } from "@/components/auth/ConnectSpotifyStep";
 import { ConnectWhatsAppStep } from "@/components/auth/ConnectWhatsAppStep";
 import { DownloadStep } from "@/components/auth/DownloadStep";
 import { SetupStep } from "@/components/auth/SetupStep";
+import { SyncContactsStep } from "@/components/auth/SyncContactsStep";
 import type { Step } from "@/types/auth.type";
 import { useState } from "react";
 
@@ -13,8 +14,9 @@ export const Auth = () => {
     setup: { index: 1, label: "Profile" },
     downloading: { index: 2, label: "Models" },
     connect_google: { index: 3, label: "Google" },
-    connect_spotify: { index: 4, label: "Spotify" },
-    connect_whatsapp: { index: 5, label: "WhatsApp" },
+    sync_contact: { index: 4, label: "Contacts" },
+    connect_spotify: { index: 5, label: "Spotify" },
+    connect_whatsapp: { index: 6, label: "WhatsApp" },
   };
 
   const current = STEP_META[step];
@@ -24,13 +26,15 @@ export const Auth = () => {
       <div className="w-full max-w-md">
         <div className="mb-5 px-1">
           <p className="font-mono text-[10px] sm:text-xs text-muted-foreground uppercase tracking-widest mb-2">
-            Step {current.index} of 5 · {current.label}
+            Step {current.index} of 6 · {current.label}
           </p>
           <h1 className="text-lg sm:text-xl font-medium">
             {step === "setup" && "Set up your assistant"}
             {step === "downloading" && "Downloading models"}
             {step === "connect_google" && "Connect Google"}
+            {step === "sync_contact" && "Sync contacts"}
             {step === "connect_spotify" && "Connect Spotify"}
+            {step === "connect_whatsapp" && "Connect WhatsApp"}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             {step === "setup" &&
@@ -39,8 +43,12 @@ export const Auth = () => {
               "This may take a few minutes. Keep this window open."}
             {step === "connect_google" &&
               "Required to send emails and access Google services."}
+            {step === "sync_contact" &&
+              "Importing your Google contacts into VIMA."}
             {step === "connect_spotify" &&
-              "Required to control music playback and search tracks."}
+              "Required to control music playback and search tracks.Only if you have premium"}
+            {step === "connect_whatsapp" &&
+              "Send and receive WhatsApp messages hands-free."}
           </p>
         </div>
 
@@ -52,7 +60,10 @@ export const Auth = () => {
             <DownloadStep onDone={() => setStep("connect_google")} />
           )}
           {step === "connect_google" && (
-            <ConnectGoogleStep onDone={() => setStep("connect_spotify")} />
+            <ConnectGoogleStep onDone={() => setStep("sync_contact")} />
+          )}
+          {step === "sync_contact" && (
+            <SyncContactsStep onDone={() => setStep("connect_spotify")} />
           )}
           {step === "connect_spotify" && (
             <ConnectSpotifyStep
