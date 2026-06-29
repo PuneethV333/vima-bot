@@ -13,6 +13,7 @@ export const FormDataSchema = z.object({
     model: z.string().optional(),
     apiKey: z.string().optional(),
     whisperModel: z.enum(["tiny", "base", "small", "medium", "large"]),
+    searchApiKey:z.string(),
 }).superRefine((data, ctx) => {
     if ((data.env !== "local") && !data.apiKey?.trim()) {
         ctx.addIssue({

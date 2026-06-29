@@ -5,13 +5,13 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import morgan from "morgan"
 import cors from "cors"
-import { config } from "./config/data.config.js";
+import { config } from "./config/data.config";
 import http from "http"
-import { initWebSocket } from "./config/initWebSocket.config.js";
-import { errorHandling } from "./middleware/error.middleware.js";
-import { authRouter } from "./routes/auth.routes.js";
-import { googleRouter } from "./routes/google.routes.js";
-import { spotifyRouter } from "./routes/spotify.routes.js";
+import { initWebSocket } from "./config/initWebSocket.config";
+import { errorHandling } from "./middleware/error.middleware";
+import { authRouter } from "./routes/auth.routes";
+import { googleRouter } from "./routes/google.routes";
+import { spotifyRouter } from "./routes/spotify.routes";
 
 export const app = express()
 
