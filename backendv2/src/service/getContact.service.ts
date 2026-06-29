@@ -18,7 +18,7 @@ export const getGoogleContacts = async () => {
     const res = await people.people.connections.list({
         resourceName: "people/me",
         pageSize: 1000,
-        personFields: "name,emailAddresses,phoneNumbers"
+        personFields: "names,emailAddresses,phoneNumbers"
     })
 
     return res.data.connections?.map((person) => ({

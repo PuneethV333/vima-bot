@@ -5,7 +5,7 @@ import { oauth2Client } from "./oAuth.config"
 import { spotifyApi } from "./spotify.config"
 import { connectToWhatsApp } from "../controller/whatsapp.controller"
 import { syncContacts } from "../controller/google.controller"
-
+import { wssPayload } from "../types/data.type"
 
 let wss: WebSocketServer
 
@@ -24,9 +24,14 @@ export const initWebSocket = (server: http.Server) => {
         ws.on("message", (msg) => {
             console.log("RAW MESSAGE:", msg.toString())
             try {
-                const payload = JSON.parse(msg.toString())
+                const parsed = wssPayload.safeParse(JSON.parse(msg.toString()))
+                if (!parsed.success) {
+                    ws.send("Invalid request body")
+                }
 
-                switch (payload.type) {
+                const payload = parsed.data
+
+                switch (payload?.type) {
                     case "PULL_MODELS": {
                         const { ollamaModel } = payload.payload
                         if (!ollamaModel) {
@@ -41,7 +46,7 @@ export const initWebSocket = (server: http.Server) => {
                         const url = oauth2Client.generateAuthUrl({
                             access_type: "offline",
                             prompt: "consent",
-                            scope: ["https://mail.google.com/"],
+                            scope: ["https://mail.google.com/", "https://www.googleapis.com/auth/contacts.readonly",],
                         })
                         ws.send(JSON.stringify({ type: "GOOGLE_AUTH_URL", data: url }))
                         break
