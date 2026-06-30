@@ -1,10 +1,9 @@
 import os
 from fastapi import UploadFile
-from fastapi.responses import FileResponse
 from core.whisper import model
+from fastapi.responses import StreamingResponse
 import uuid
 import edge_tts
-from starlette.background import BackgroundTask
 from pydantic import BaseModel
 
 
@@ -25,9 +24,11 @@ async def transcribeService(file: UploadFile):
 
 
 async def speakService(body: SpeakRequest):
-    out = f"/tmp/{uuid.uuid4()}.mp3"
     communicate = edge_tts.Communicate(body.text, voice=body.voice)
-    await communicate.save(out)
-    return FileResponse(
-        out, media_type="audio/mpeg", background=BackgroundTask(os.remove, out)
-    )
+
+    async def audio_stream():
+        async for chunk in communicate.stream():
+            if chunk["type"] == "audio":
+                yield chunk["data"]
+                
+    return StreamingResponse(audio_stream(),media_type="audio/mpeg")
