@@ -6,6 +6,7 @@ import { spotifyApi } from "./spotify.config"
 import { connectToWhatsApp } from "../controller/whatsapp.controller"
 import { syncContacts } from "../controller/google.controller"
 import { wssPayload } from "../types/data.type"
+import { chat } from "../controller/chat.controller"
 
 let wss: WebSocketServer
 
@@ -16,12 +17,17 @@ export const initWebSocket = (server: http.Server) => {
 
     wss.on("connection", (ws) => {
         console.log("Client connected")
+        
+        chat(ws)
 
         if (ws.readyState === ws.OPEN) {
             ws.send(JSON.stringify({ type: "CONNECTED", message: "Welcome" }))
         }
 
-        ws.on("message", (msg) => {
+        ws.on("message", (msg,isBinary) => {
+            if(isBinary){
+                return
+            }
             console.log("RAW MESSAGE:", msg.toString())
             try {
                 const parsed = wssPayload.safeParse(JSON.parse(msg.toString()))

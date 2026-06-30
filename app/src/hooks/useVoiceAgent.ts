@@ -27,13 +27,13 @@ export const useVoiceAgent = () => {
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
 
-    
+
     const mediaSourceRef = useRef<MediaSource | null>(null);
     const sourceBufferRef = useRef<SourceBuffer | null>(null);
     const audioElRef = useRef<HTMLAudioElement | null>(null);
     const pendingAudioChunksRef = useRef<ArrayBuffer[]>([]);
 
-    
+
     useEffect(() => {
         const ws = new WebSocket(WS_URL);
         ws.binaryType = "arraybuffer";
@@ -208,7 +208,7 @@ export const useVoiceAgent = () => {
         setIsRecording(false);
 
         // tell server the user is done talking
-        wsRef.current?.send(JSON.stringify({ type: "audio_end" }));
+        wsRef.current?.send(JSON.stringify({ type: "audio_chunk" }));
     }, []);
 
     const toggleRecording = useCallback(() => {
