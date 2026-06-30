@@ -38,8 +38,8 @@ export const spotifyCallback = async (req: Request, res: Response) => {
         await prisma.settings.updateMany({
             data: {
                 spotifyUserId: me.id,
-                spotifyAccessTokenEnc: access_token,
-                spotifyRefreshTokenEnc: refresh_token,
+                spotifyAccessToken: access_token,
+                spotifyRefreshToken: refresh_token,
                 spotifyTokenExpiry: expiry,
                 spotifyConnectedAt: new Date(),
                 spotifyAuthComplete: true

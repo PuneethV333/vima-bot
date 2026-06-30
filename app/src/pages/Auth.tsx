@@ -4,20 +4,15 @@ import { ConnectWhatsAppStep } from "@/components/auth/ConnectWhatsAppStep";
 import { DownloadStep } from "@/components/auth/DownloadStep";
 import { SetupStep } from "@/components/auth/SetupStep";
 import { SyncContactsStep } from "@/components/auth/SyncContactsStep";
+import { VerifyStep } from "@/components/auth/VerifyStep";
+import { STEP_INDEX_TO_KEY, STEP_META } from "@/constants/auth.constants";
 import type { Step } from "@/types/auth.type";
 import { useState } from "react";
 
 export const Auth = () => {
   const [step, setStep] = useState<Step>("setup");
 
-  const STEP_META = {
-    setup: { index: 1, label: "Profile" },
-    downloading: { index: 2, label: "Models" },
-    connect_google: { index: 3, label: "Google" },
-    sync_contact: { index: 4, label: "Contacts" },
-    connect_spotify: { index: 5, label: "Spotify" },
-    connect_whatsapp: { index: 6, label: "WhatsApp" },
-  };
+  
 
   const current = STEP_META[step];
 
@@ -26,7 +21,7 @@ export const Auth = () => {
       <div className="w-full max-w-md">
         <div className="mb-5 px-1">
           <p className="font-mono text-[10px] sm:text-xs text-muted-foreground uppercase tracking-widest mb-2">
-            Step {current.index} of 6 · {current.label}
+            Step {current.index} of 7 · {current.label}
           </p>
           <h1 className="text-lg sm:text-xl font-medium">
             {step === "setup" && "Set up your assistant"}
@@ -35,6 +30,7 @@ export const Auth = () => {
             {step === "sync_contact" && "Sync contacts"}
             {step === "connect_spotify" && "Connect Spotify"}
             {step === "connect_whatsapp" && "Connect WhatsApp"}
+            {step === "verifyApiKeys" && "Verify your setup"} {/* ← add this */}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             {step === "setup" &&
@@ -49,6 +45,7 @@ export const Auth = () => {
               "Required to control music playback and search tracks.Only if you have premium"}
             {step === "connect_whatsapp" &&
               "Send and receive WhatsApp messages hands-free."}
+            {step === "verifyApiKeys" && "Verify you api keys"}
           </p>
         </div>
 
@@ -74,7 +71,16 @@ export const Auth = () => {
           {step === "connect_whatsapp" && (
             <ConnectWhatsAppStep
               onDone={() => {
-                /* invalidate ["me"] */
+                setStep("verifyApiKeys");
+              }}
+            />
+          )}
+          {step === "verifyApiKeys" && (
+            <VerifyStep
+              onBack={() => setStep("connect_whatsapp")}
+              goToStep={(idx) => {
+                const target = STEP_INDEX_TO_KEY[idx];
+                if (target) setStep(target);
               }}
             />
           )}

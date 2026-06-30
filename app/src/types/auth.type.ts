@@ -14,6 +14,7 @@ export const FormDataSchema = z.object({
     apiKey: z.string().optional(),
     whisperModel: z.enum(["tiny", "base", "small", "medium", "large"]),
     searchApiKey:z.string(),
+    tavilyApiKey:z.string(),
 }).superRefine((data, ctx) => {
     if ((data.env !== "local") && !data.apiKey?.trim()) {
         ctx.addIssue({
@@ -26,7 +27,7 @@ export const FormDataSchema = z.object({
 
 export type FormData = z.infer<typeof FormDataSchema>
 
-export type Step = "setup" | "downloading" | "connect_google" | "connect_spotify" | "connect_whatsapp" | "sync_contact";
+export type Step = "setup" | "downloading" | "connect_google" | "connect_spotify" | "connect_whatsapp" | "sync_contact"|"verifyApiKeys";
 
 export type DownloadState = {
     ollamaProgress: string;

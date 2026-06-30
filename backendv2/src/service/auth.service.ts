@@ -14,9 +14,10 @@ export const authService = async (data: FormData) => {
                 userId: user.id,
                 modelMode: data.env,
                 localModel: data.model,
-                geminiApiKeyEnc: data.apiKey,
+                geminiApiKey: data.apiKey,
                 whisperModel: data.whisperModel,
-                searchApiKeyEnc: data.searchApiKey
+                searchApiKey: data.searchApiKey,
+                tavilyApiKey: data.tavilyApiKey
             }
         })
         return user

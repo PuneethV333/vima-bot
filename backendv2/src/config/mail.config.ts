@@ -6,10 +6,10 @@ import { config } from "./data.config"
 
 export const getGmailTransporter = async () => {
     const settings = await prisma.settings.findFirst()
-    if (!settings?.googleRefreshTokenEnc) throw new Error("Gmail not connected")
+    if (!settings?.googleRefreshToken) throw new Error("Gmail not connected")
 
     oauth2Client.setCredentials({
-        refresh_token: settings.googleRefreshTokenEnc,
+        refresh_token: settings.googleRefreshToken,
         expiry_date: settings.googleTokenExpiry?.getTime(),
     })
 
@@ -31,7 +31,7 @@ export const getGmailTransporter = async () => {
             user: settings.googleId!,
             clientId: config.clientId,
             clientSecret: config.clientSecret,
-            refreshToken: settings.googleRefreshTokenEnc,
+            refreshToken: settings.googleRefreshToken,
             accessToken: token as string,
         },
     }

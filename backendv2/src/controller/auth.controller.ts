@@ -3,9 +3,8 @@ import { prisma } from "../config/prisma"
 import { getError } from "../utils/error.utils"
 import { FormDataSchema } from "../types/auth.type"
 import { authService } from "../service/auth.service"
-import { getWss } from "../config/initWebSocket.config"
+import { verifyGeminiKey, verifyGoogleRefreshToken, verifySpotifyRefreshToken, verifyTavilyKey } from "../test/apiKey.test"
 import { config } from "../config/data.config"
-import { oauth2Client } from "../config/oAuth.config"
 
 export const getMe = async (_: Request, res: Response) => {
     const user = await prisma.user.findFirst({
@@ -47,8 +46,61 @@ export const auth = async (req: Request, res: Response) => {
         })
     } catch (err) {
         console.error(err);
-        
+
         return res.status(500).json(getError(err))
     }
 }
 
+export const verifyApiKeys = async (_: Request, res: Response) => {
+    try {
+        const settings = await prisma.settings.findFirst();
+
+        if (!settings) return res.status(400).json({ success: false });
+
+        const needsGemini = settings.modelMode !== "local";
+        const needsGoogle = !!settings.googleRefreshToken;
+        const needsSpotify = !!settings.spotifyRefreshToken;
+
+        const [geminiResult, tavilyResult, googleRefreshTokenResult, spotifyRefreshTokenResult] = await Promise.all([
+            needsGemini
+                ? verifyGeminiKey(settings.geminiApiKey!)
+                : Promise.resolve({ valid: true, error: undefined }),
+            verifyTavilyKey(settings.tavilyApiKey),
+            needsGoogle
+                ? verifyGoogleRefreshToken(settings.googleRefreshToken!, config.clientId, config.clientSecret)
+                : Promise.resolve({ valid: true, error: undefined }),
+            needsSpotify
+                ? verifySpotifyRefreshToken(settings.spotifyRefreshToken!, config.spotifyClientId, config.spotifyClientSecret)
+                : Promise.resolve({ valid: true, error: undefined }),
+        ]);
+
+        if (!tavilyResult.valid) {
+            return res.status(400).json({ field: "tavilyApiKey", error: tavilyResult.error });
+        }
+        if (needsGoogle && !googleRefreshTokenResult.valid) {
+            return res.status(400).json({ field: "googleRefreshToken", error: googleRefreshTokenResult.error });
+        }
+        if (needsSpotify && !spotifyRefreshTokenResult.valid) {
+            return res.status(400).json({ field: "spotifyRefreshToken", error: spotifyRefreshTokenResult.error });
+        }
+        if (needsGemini && !geminiResult.valid) {
+            return res.status(400).json({ field: "geminiApiKey", error: geminiResult.error });
+        }
+
+        const [, user] = await Promise.all([
+            prisma.settings.update({
+                where: { userId: settings.userId },
+                data: { setupCompleted: true },
+            }),
+            prisma.user.update({
+                where: { id: settings.userId },
+                data: { profileComplete: true },
+            }),
+        ]);
+
+        return res.json({ success: true, data:user });
+
+    } catch (err) {
+        return res.status(500).json(getError(err));
+    }
+};

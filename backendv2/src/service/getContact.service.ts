@@ -4,10 +4,10 @@ import { prisma } from "../config/prisma"
 
 export const getGoogleContacts = async () => {
     const settings = await prisma.settings.findFirst()
-    if (!settings?.googleRefreshTokenEnc) throw new Error("google auth not completed")
+    if (!settings?.googleRefreshToken) throw new Error("google auth not completed")
 
     oauth2Client.setCredentials({
-        refresh_token: settings.googleRefreshTokenEnc
+        refresh_token: settings.googleRefreshToken
     })
 
     const people = google.people({

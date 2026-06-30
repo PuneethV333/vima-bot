@@ -7,6 +7,7 @@ export const FormDataSchema = z.object({
     apiKey: z.string().optional(),
     whisperModel: z.enum(["tiny", "base", "small", "medium", "large"]),
     searchApiKey: z.string(),
+    tavilyApiKey: z.string()
 })
 
 export type FormData = z.infer<typeof FormDataSchema>

@@ -13,7 +13,7 @@ export const googleCallBack = async (req: Request, res: Response) => {
 
         await prisma.settings.updateMany({
             data: {
-                googleRefreshTokenEnc: tokens.refresh_token,
+                googleRefreshToken: tokens.refresh_token,
                 googleTokenExpiry: new Date(tokens.expiry_date!),
                 googleConnectedAt: new Date(),
                 googleId: tokenInfo.email,

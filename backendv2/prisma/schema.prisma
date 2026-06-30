@@ -53,24 +53,25 @@ model Settings {
     // whisper
     whisperModel String?
 
-    geminiApiKeyEnc String?
+    geminiApiKey String?
 
     /*
      * Email (optional SMTP fallback)
      */
     email               String?
-    emailAppPasswordEnc String?
+    emailAppPassword String?
 
     /*
      * Search
      */
-    searchApiKeyEnc String?
+    searchApiKey String?
+    tavilyApiKey String
 
     /*
      * Google OAuth
      */
     googleId              String?
-    googleRefreshTokenEnc String?
+    googleRefreshToken String?
     googleClientSecret    String?
     googleTokenExpiry     DateTime?
     googleConnectedAt     DateTime?
@@ -81,8 +82,8 @@ model Settings {
 
     spotifyAuthComplete    Boolean   @default(false)
     spotifyUserId          String?
-    spotifyAccessTokenEnc  String?
-    spotifyRefreshTokenEnc String?
+    spotifyAccessToken  String?
+    spotifyRefreshToken String?
     spotifyTokenExpiry     DateTime?
     spotifyConnectedAt     DateTime?
 

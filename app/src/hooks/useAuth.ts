@@ -1,6 +1,7 @@
-import { authApi, getMeApi } from "@/api/auth.api";
+import { authApi, getMeApi, verifyApiKeyApi } from "@/api/auth.api";
 import { connectWS, getSocket, sendWS } from "@/lib/ws";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 export const useGetMe = () =>
@@ -35,5 +36,18 @@ export const useAuth = (onSuccess: () => void) => {
             }
         },
         onError: () => toast.error("Failed, try again")
+    })
+}
+
+export const useVerifyMe = () => {
+    const queryClient = useQueryClient()
+    const navigate = useNavigate()
+    return useMutation({
+        mutationFn: verifyApiKeyApi,
+        mutationKey: ["verify"],
+        onSuccess: (res) => {
+            queryClient.setQueryData(["me"], res)
+            navigate("/")
+        }
     })
 }
