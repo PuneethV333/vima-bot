@@ -54,5 +54,4 @@ export const chat = (ws: WebSocket) => {
         aboutController?.abort()
         audioChunk = []
     })
-
 }
