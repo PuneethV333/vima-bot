@@ -1,12 +1,18 @@
 import http from "http"
 import { WebSocketServer } from "ws"
-import { OllamaModel, pullOllama } from "../service/pull.service"
+import { OllamaModel } from "../service/pull.service"
 import { oauth2Client } from "./oAuth.config"
 import { spotifyApi } from "./spotify.config"
 import { connectToWhatsApp } from "../controller/whatsapp.controller"
 import { syncContacts } from "../controller/google.controller"
 import { wssPayload } from "../types/data.type"
 import { chat } from "../controller/chat.controller"
+// import { handleChat } from "../webSocket/chat.handler"
+import { handlePullModel } from "../handlers/handlePullModel"
+import { handleGoogleOAuth } from "../handlers/handleGoogleOAuth"
+import { handleSpotifyOAuth } from "../handlers/handleSpotifyOAuth"
+import { handleWhatsappInit } from "../handlers/handleWhatsappInit"
+import { handleSyncContact } from "../handlers/handleSyncContacts"
 
 let wss: WebSocketServer
 
@@ -17,15 +23,15 @@ export const initWebSocket = (server: http.Server) => {
 
     wss.on("connection", (ws) => {
         console.log("Client connected")
-        
+
         chat(ws)
 
         if (ws.readyState === ws.OPEN) {
             ws.send(JSON.stringify({ type: "CONNECTED", message: "Welcome" }))
         }
 
-        ws.on("message", (msg,isBinary) => {
-            if(isBinary){
+        ws.on("message", (msg, isBinary) => {
+            if (isBinary) {
                 return
             }
             console.log("RAW MESSAGE:", msg.toString())
@@ -40,54 +46,75 @@ export const initWebSocket = (server: http.Server) => {
                 switch (payload?.type) {
                     case "PULL_MODELS": {
                         const { ollamaModel } = payload.payload
-                        if (!ollamaModel) {
-                            ws.send(JSON.stringify({ type: "ERROR", message: "Missing model names" }))
-                            break
-                        }
-                        pullOllama(ws, ollamaModel as OllamaModel)
+                        handlePullModel(ws, ollamaModel as OllamaModel)
                         break
                     }
+                    // case "PULL_MODELS": {
+                    //     const { ollamaModel } = payload.payload
+                    //     if (!ollamaModel) {
+                    //         ws.send(JSON.stringify({ type: "ERROR", message: "Missing model names" }))
+                    //         break
+                    //     }
+                    //     pullOllama(ws, ollamaModel as OllamaModel)
+                    //     break
+                    // }
 
                     case "GOOGLE_OAUTH": {
-                        const url = oauth2Client.generateAuthUrl({
-                            access_type: "offline",
-                            prompt: "consent",
-                            scope: ["https://mail.google.com/", "https://www.googleapis.com/auth/contacts.readonly",],
-                        })
-                        ws.send(JSON.stringify({ type: "GOOGLE_AUTH_URL", data: url }))
+                        handleGoogleOAuth(ws)
                         break
                     }
+                    // case "GOOGLE_OAUTH": {
+                    //     const url = oauth2Client.generateAuthUrl({
+                    //         access_type: "offline",
+                    //         prompt: "consent",
+                    //         scope: ["https://mail.google.com/", "https://www.googleapis.com/auth/contacts.readonly",],
+                    //     })
+                    //     ws.send(JSON.stringify({ type: "GOOGLE_AUTH_URL", data: url }))
+                    //     break
+                    // }
 
                     case "SPOTIFY_OAUTH": {
-                        const url = spotifyApi.createAuthorizeURL([
-                            "user-read-playback-state",
-                            "user-modify-playback-state",
-                            "user-read-currently-playing",
-                            "streaming",
-                            "app-remote-control",
-                        ], "vima-state")
-                        ws.send(JSON.stringify({ type: "SPOTIFY_AUTH_URL", data: url }))
+                        handleSpotifyOAuth(ws)
                         break
                     }
+                    // case "SPOTIFY_OAUTH": {
+                    //     const url = spotifyApi.createAuthorizeURL([
+                    //         "user-read-playback-state",
+                    //         "user-modify-playback-state",
+                    //         "user-read-currently-playing",
+                    //         "streaming",
+                    //         "app-remote-control",
+                    //     ], "vima-state")
+                    //     ws.send(JSON.stringify({ type: "SPOTIFY_AUTH_URL", data: url }))
+                    //     break
+                    // }
 
                     case "WHATSAPP_INIT": {
-                        connectToWhatsApp()
-                        ws.send(JSON.stringify({ type: "WHATSAPP_STARTING" }))
+                        handleWhatsappInit(ws)
                         break
                     }
+                    // case "WHATSAPP_INIT": {
+                    //     connectToWhatsApp()
+                    //     ws.send(JSON.stringify({ type: "WHATSAPP_STARTING" }))
+                    //     break
+                    // }
 
                     case "SYNC_CONTACTS": {
-                        syncContacts()
-                            .then((count) => {
-                                ws.send(JSON.stringify({ type: "CONTACTS_SYNCED", data: count }))
-                            })
-                            .catch((err) => {
-                                console.error(err)
-                                ws.send(JSON.stringify({ type: "CONTACTS_ERROR" }))
-                            })
-                        ws.send(JSON.stringify({ type: "CONTACTS_SYNCING" }))
+                        handleSyncContact(ws)
                         break
                     }
+                    // case "SYNC_CONTACTS": {
+                    //     syncContacts()
+                    //         .then((count) => {
+                    //             ws.send(JSON.stringify({ type: "CONTACTS_SYNCED", data: count }))
+                    //         })
+                    //         .catch((err) => {
+                    //             console.error(err)
+                    //             ws.send(JSON.stringify({ type: "CONTACTS_ERROR" }))
+                    //         })
+                    //     ws.send(JSON.stringify({ type: "CONTACTS_SYNCING" }))
+                    //     break
+                    // }
                 }
 
             } catch (err) {

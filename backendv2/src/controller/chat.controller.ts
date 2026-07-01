@@ -2,6 +2,7 @@ import { WebSocket } from "ws"
 import { ClientMessage } from "../types/data.type"
 import { speechToText } from "../service/speechToText.service"
 import { textToSpeech } from "../service/textToSpeech.service"
+import { ollamaService } from "../service/ollama.service"
 
 export const chat = (ws: WebSocket) => {
     let audioChunk: Buffer[] = []
@@ -25,10 +26,10 @@ export const chat = (ws: WebSocket) => {
 
 
                 aboutController = new AbortController()
-                const finalText = "llm shit will be added hear"
+                const result = "llm shit here"
 
                 ws.send(JSON.stringify({ type: "audio_start" }));
-                const audioStream = await textToSpeech(finalText);
+                const audioStream = await textToSpeech(result);
 
                 audioStream.on("data", (chunk: Buffer) => {
                     if (ws.readyState === ws.OPEN) ws.send(chunk);
